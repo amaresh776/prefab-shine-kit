@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { Card } from "antd";
 
 interface DashboardCardProps {
   title: string;
@@ -18,17 +17,14 @@ export const DashboardCard = ({
   action 
 }: DashboardCardProps) => {
   return (
-    <Card className={cn("transition-all hover:shadow-md", className)}>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>{title}</CardTitle>
-            {description && <CardDescription>{description}</CardDescription>}
-          </div>
-          {action && <div>{action}</div>}
-        </div>
-      </CardHeader>
-      <CardContent>{children}</CardContent>
+    <Card 
+      title={title}
+      extra={action}
+      className={className}
+      hoverable
+    >
+      {description && <p className="text-sm text-gray-500 mb-4">{description}</p>}
+      {children}
     </Card>
   );
 };

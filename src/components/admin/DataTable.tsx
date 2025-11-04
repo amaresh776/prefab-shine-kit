@@ -1,12 +1,5 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { cn } from "@/lib/utils";
+import { Table } from "antd";
+import type { ColumnsType } from "antd/es/table";
 
 interface Column<T> {
   key: keyof T;
@@ -25,38 +18,22 @@ export function DataTable<T extends Record<string, any>>({
   columns, 
   className 
 }: DataTableProps<T>) {
+  const antdColumns: ColumnsType<T> = columns.map((column) => ({
+    title: column.header,
+    dataIndex: column.key as string,
+    key: column.key as string,
+    render: column.render 
+      ? (value: any, record: T) => column.render!(value, record)
+      : undefined,
+  }));
+
   return (
-    <div className={cn("rounded-md border", className)}>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            {columns.map((column) => (
-              <TableHead key={String(column.key)}>{column.header}</TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          ) : (
-            data.map((row, rowIndex) => (
-              <TableRow key={rowIndex}>
-                {columns.map((column) => (
-                  <TableCell key={String(column.key)}>
-                    {column.render
-                      ? column.render(row[column.key], row)
-                      : String(row[column.key])}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
-    </div>
+    <Table<T>
+      columns={antdColumns}
+      dataSource={data}
+      className={className}
+      pagination={{ pageSize: 10 }}
+      rowKey={(record, index) => index?.toString() || "0"}
+    />
   );
 }

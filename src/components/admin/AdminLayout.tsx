@@ -1,95 +1,76 @@
 import { ReactNode, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Layout, Menu, Button } from "antd";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import {
   LayoutDashboard,
   Users,
   Settings,
   BarChart3,
   FileText,
-  Menu,
-  X,
 } from "lucide-react";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarProvider,
-  SidebarTrigger,
-  useSidebar,
-} from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
+
+const { Header, Sider, Content } = Layout;
 
 const menuItems = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "Users", url: "/users", icon: Users },
-  { title: "Analytics", url: "/analytics", icon: BarChart3 },
-  { title: "Reports", url: "/reports", icon: FileText },
-  { title: "Settings", url: "/settings", icon: Settings },
+  { key: "/", label: "Dashboard", icon: LayoutDashboard },
+  { key: "/users", label: "Users", icon: Users },
+  { key: "/analytics", label: "Analytics", icon: BarChart3 },
+  { key: "/reports", label: "Reports", icon: FileText },
+  { key: "/settings", label: "Settings", icon: Settings },
 ];
 
 interface AdminLayoutProps {
   children: ReactNode;
 }
 
-function AdminSidebar() {
-  const { state } = useSidebar();
-  const isCollapsed = state === "collapsed";
+export const AdminLayout = ({ children }: AdminLayoutProps) => {
+  const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const items = menuItems.map((item) => ({
+    key: item.key,
+    icon: <item.icon className="h-4 w-4" />,
+    label: item.label,
+    onClick: () => navigate(item.key),
+  }));
 
   return (
-    <Sidebar collapsible="icon">
-      <SidebarContent>
-        <div className="px-4 py-6">
-          <h2 className={`font-bold text-xl ${isCollapsed ? "hidden" : ""}`}>
-            Admin Panel
+    <Layout className="min-h-screen">
+      <Sider 
+        trigger={null} 
+        collapsible 
+        collapsed={collapsed}
+        className="shadow-lg"
+      >
+        <div className="h-16 flex items-center justify-center border-b border-gray-700">
+          <h2 className={`font-bold text-white ${collapsed ? "text-sm" : "text-xl"}`}>
+            {collapsed ? "AP" : "Admin Panel"}
           </h2>
         </div>
-        <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      className={({ isActive }) =>
-                        isActive
-                          ? "bg-accent text-accent-foreground"
-                          : "hover:bg-accent/50"
-                      }
-                    >
-                      <item.icon className="h-4 w-4" />
-                      {!isCollapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </Sidebar>
-  );
-}
-
-export const AdminLayout = ({ children }: AdminLayoutProps) => {
-  return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <AdminSidebar />
-        <main className="flex-1">
-          <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-6">
-            <SidebarTrigger />
-            <h1 className="text-lg font-semibold">Admin Dashboard</h1>
-          </header>
-          <div className="p-6">{children}</div>
-        </main>
-      </div>
-    </SidebarProvider>
+        <Menu
+          theme="dark"
+          mode="inline"
+          selectedKeys={[location.pathname]}
+          items={items}
+          className="mt-4"
+        />
+      </Sider>
+      <Layout>
+        <Header className="bg-white shadow-sm px-6 flex items-center">
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={() => setCollapsed(!collapsed)}
+            className="text-lg w-16 h-16"
+          />
+          <h1 className="text-lg font-semibold ml-4">Admin Dashboard</h1>
+        </Header>
+        <Content className="m-6 p-6 bg-gray-50 rounded-lg min-h-[280px]">
+          {children}
+        </Content>
+      </Layout>
+    </Layout>
   );
 };
