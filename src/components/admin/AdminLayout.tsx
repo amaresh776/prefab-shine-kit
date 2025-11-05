@@ -29,13 +29,6 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const items = menuItems.map((item) => ({
-    key: item.key,
-    icon: <item.icon className="h-4 w-4" />,
-    label: item.label,
-    onClick: () => navigate(item.key),
-  }));
-
   return (
     <Layout className="min-h-screen">
       <Sider 
@@ -53,9 +46,18 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
           theme="dark"
           mode="inline"
           selectedKeys={[location.pathname]}
-          items={items}
           className="mt-4"
-        />
+        >
+          {menuItems.map((item) => (
+            <Menu.Item 
+              key={item.key} 
+              icon={<item.icon className="h-4 w-4" />}
+              onClick={() => navigate(item.key)}
+            >
+              {item.label}
+            </Menu.Item>
+          ))}
+        </Menu>
       </Sider>
       <Layout>
         <Header className="bg-white shadow-sm px-6 flex items-center">
