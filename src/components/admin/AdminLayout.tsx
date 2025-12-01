@@ -1,6 +1,6 @@
 import { ReactNode, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Layout, Menu, Button } from "antd";
+import { Layout, Menu, Button, type MenuProps } from "antd";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import {
   LayoutDashboard,
@@ -12,12 +12,12 @@ import {
 
 const { Header, Sider, Content } = Layout;
 
-const menuItems = [
-  { key: "/", label: "Dashboard", icon: LayoutDashboard },
-  { key: "/users", label: "Users", icon: Users },
-  { key: "/analytics", label: "Analytics", icon: BarChart3 },
-  { key: "/reports", label: "Reports", icon: FileText },
-  { key: "/settings", label: "Settings", icon: Settings },
+const menuItems: MenuProps['items'] = [
+  { key: "/", label: "Dashboard", icon: <LayoutDashboard className="h-4 w-4" /> },
+  { key: "/users", label: "Users", icon: <Users className="h-4 w-4" /> },
+  { key: "/analytics", label: "Analytics", icon: <BarChart3 className="h-4 w-4" /> },
+  { key: "/reports", label: "Reports", icon: <FileText className="h-4 w-4" /> },
+  { key: "/settings", label: "Settings", icon: <Settings className="h-4 w-4" /> },
 ];
 
 interface AdminLayoutProps {
@@ -47,17 +47,9 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
           mode="inline"
           selectedKeys={[location.pathname]}
           className="mt-4"
-        >
-          {menuItems.map((item) => (
-            <Menu.Item 
-              key={item.key} 
-              icon={<item.icon className="h-4 w-4" />}
-              onClick={() => navigate(item.key)}
-            >
-              {item.label}
-            </Menu.Item>
-          ))}
-        </Menu>
+          items={menuItems}
+          onClick={({ key }) => navigate(key)}
+        />
       </Sider>
       <Layout>
         <Header className="bg-white shadow-sm px-6 flex items-center">
