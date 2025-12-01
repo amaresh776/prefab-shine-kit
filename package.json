@@ -13,6 +13,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.6.1",
     "@hookform/resolvers": "^3.10.0",
+    "@module-federation/vite": "^1.9.1",
     "@originjs/vite-plugin-federation": "^1.4.1",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-alert-dialog": "^1.1.14",
