@@ -3,6 +3,16 @@ import * as RechartsPrimitive from "recharts";
 
 import { cn } from "@/lib/utils";
 
+// React 17 compatible ID generator
+let idCounter = 0;
+const useId = () => {
+  const idRef = React.useRef<string>();
+  if (!idRef.current) {
+    idRef.current = `id-${++idCounter}`;
+  }
+  return idRef.current;
+};
+
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const;
 
@@ -36,7 +46,7 @@ const ChartContainer = React.forwardRef<
     children: React.ComponentProps<typeof RechartsPrimitive.ResponsiveContainer>["children"];
   }
 >(({ id, className, children, config, ...props }, ref) => {
-  const uniqueId = React.useId();
+  const uniqueId = useId();
   const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`;
 
   return (
